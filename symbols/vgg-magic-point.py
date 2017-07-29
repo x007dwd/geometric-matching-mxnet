@@ -1,0 +1,115 @@
+"""References:
+
+Simonyan, Karen, and Andrew Zisserman. "Very deep convolutional networks for
+large-scale image recognition." arXiv preprint arXiv:1409.1556 (2014).
+"""
+import mxnet as mx
+
+def get_symbol(num_classes, **kwargs):
+    ## define VGG-ccn geometric
+    data_left = mx.symbol.Variable(name="data")
+    # group 1
+    conv1_1a = mx.symbol.Convolution(data=data_left, kernel=(3, 3), pad=(1, 1), num_filter=64, name="conv1_1")
+    relu1_1a = mx.symbol.Activation(data=conv1_1a, act_type="relu", name="relu1_1")
+    pool1a = mx.symbol.Pooling(
+        data=relu1_1a, pool_type="max", kernel=(2, 2), stride=(2,2), name="pool1")
+    # group 2
+    conv2_1a = mx.symbol.Convolution(
+        data=pool1a, kernel=(3, 3), pad=(1, 1), num_filter=128, name="conv2_1")
+    relu2_1a = mx.symbol.Activation(data=conv2_1a, act_type="relu", name="relu2_1")
+    pool2a = mx.symbol.Pooling(
+        data=relu2_1a, pool_type="max", kernel=(2, 2), stride=(2,2), name="pool2")
+    # group 3
+    conv3_1a = mx.symbol.Convolution(
+        data=pool2a, kernel=(3, 3), pad=(1, 1), num_filter=256, name="conv3_1")
+    relu3_1a = mx.symbol.Activation(data=conv3_1a, act_type="relu", name="relu3_1")
+    conv3_2a = mx.symbol.Convolution(
+        data=relu3_1a, kernel=(3, 3), pad=(1, 1), num_filter=256, name="conv3_2")
+    relu3_2a = mx.symbol.Activation(data=conv3_2a, act_type="relu", name="relu3_2")
+    pool3a = mx.symbol.Pooling(
+        data=relu3_2a, pool_type="max", kernel=(2, 2), stride=(2,2), name="pool3")
+    # group 4
+    conv4_1a = mx.symbol.Convolution(
+        data=pool3a, kernel=(3, 3), pad=(1, 1), num_filter=512, name="conv4_1")
+    relu4_1a = mx.symbol.Activation(data=conv4_1a, act_type="relu", name="relu4_1")
+    conv4_2a = mx.symbol.Convolution(
+        data=relu4_1a, kernel=(3, 3), pad=(1, 1), num_filter=512, name="conv4_2")
+    relu4_2a = mx.symbol.Activation(data=conv4_2a, act_type="relu", name="relu4_2")
+    pool4a = mx.symbol.Pooling(
+        data=relu4_2a, pool_type="max", kernel=(2, 2), stride=(2,2), name="pool4")
+    # group 5
+    conv5_1a = mx.symbol.Convolution(
+        data=pool4a, kernel=(3, 3), pad=(1, 1), num_filter=512, name="conv5_1")
+    relu5_1a = mx.symbol.Activation(data=conv5_1a, act_type="relu", name="relu5_1")
+    conv5_2a = mx.symbol.Convolution(
+        data=relu5_1a, kernel=(3, 3), pad=(1, 1), num_filter=512, name="conv5_2")
+    relu5_2a = mx.symbol.Activation(data=conv5_2a, act_type="relu", name="relu5_2")
+    pool5a = mx.symbol.Pooling(
+        data=relu5_2a, pool_type="max", kernel=(2, 2), stride=(2,2), name="pool5")
+    normal_a = mx.symbol.L2Normalization(data=pool5a, mode='instance')
+    data_right = mx.symbol.Variable(name="data")
+    # group 1
+    conv1_1b = mx.symbol.Convolution(data=data_right, kernel=(3, 3), pad=(1, 1), num_filter=64, name="conv1_1")
+    relu1_1b = mx.symbol.Activation(data=conv1_1b, act_type="relu", name="relu1_1")
+    pool1b = mx.symbol.Pooling(
+        data=relu1_1b, pool_type="max", kernel=(2, 2), stride=(2, 2), name="pool1")
+    # group 2
+    conv2_1b = mx.symbol.Convolution(
+        data=pool1b, kernel=(3, 3), pad=(1, 1), num_filter=128, name="conv2_1")
+    relu2_1b = mx.symbol.Activation(data=conv2_1b, act_type="relu", name="relu2_1")
+    pool2b = mx.symbol.Pooling(
+        data=relu2_1b, pool_type="max", kernel=(2, 2), stride=(2, 2), name="pool2")
+    # group 3
+    conv3_1b = mx.symbol.Convolution(
+        data=pool2b, kernel=(3, 3), pad=(1, 1), num_filter=256, name="conv3_1")
+    relu3_1b = mx.symbol.Activation(data=conv3_1b, act_type="relu", name="relu3_1")
+    conv3_2b = mx.symbol.Convolution(
+        data=relu3_1b, kernel=(3, 3), pad=(1, 1), num_filter=256, name="conv3_2")
+    relu3_2b = mx.symbol.Activation(data=conv3_2b, act_type="relu", name="relu3_2")
+    pool3b = mx.symbol.Pooling(
+        data=relu3_2b, pool_type="max", kernel=(2, 2), stride=(2, 2), name="pool3")
+    # group 4
+    conv4_1b = mx.symbol.Convolution(
+        data=pool3b, kernel=(3, 3), pad=(1, 1), num_filter=512, name="conv4_1")
+    relu4_1b = mx.symbol.Activation(data=conv4_1b, act_type="relu", name="relu4_1")
+    conv4_2b = mx.symbol.Convolution(
+        data=relu4_1b, kernel=(3, 3), pad=(1, 1), num_filter=512, name="conv4_2")
+    relu4_2b = mx.symbol.Activation(data=conv4_2b, act_type="relu", name="relu4_2")
+    pool4b = mx.symbol.Pooling(
+        data=relu4_2b, pool_type="max", kernel=(2, 2), stride=(2, 2), name="pool4")
+    # group 5
+    conv5_1b = mx.symbol.Convolution(
+        data=pool4b, kernel=(3, 3), pad=(1, 1), num_filter=512, name="conv5_1")
+    relu5_1b = mx.symbol.Activation(data=conv5_1b, act_type="relu", name="relu5_1")
+    conv5_2b = mx.symbol.Convolution(
+        data=relu5_1b, kernel=(3, 3), pad=(1, 1), num_filter=512, name="conv5_2")
+    relu5_2b = mx.symbol.Activation(data=conv5_2b, act_type="relu", name="relu5_2")
+    pool5b = mx.symbol.Pooling(
+        data=relu5_2b, pool_type="max", kernel=(2, 2), stride=(2, 2), name="pool5")
+    normal_b = mx.symbol.L2Normalization(data=pool5b, mode='instance')
+
+    corr_1 = mxnet.symbol.Correlation(data1=normal_a, data2=normal_b)
+    # Need to do normalization at the output of the CorrLayer
+    relu6_1 = mx.symbol.Activation(data=corr_1, act_type="relu", name="relu6_1")
+    norm_2 = ExpressionLayer(data=relu6_1, lambda X: X / T.sqrt(T.sum(T.square(X), axis=1, keepdims=True)))
+
+
+    conv6_1 = mx.symbol.Convolution(
+        data=norm_2, kernel=(7, 7), pad=(1, 1), num_filter=128, name="conv6_1")
+    relu6_1 = mx.symbol.Activation(data=conv6_1, act_type="relu", name="relu6_1")
+    pool6 = mx.symbol.Pooling(
+        data=relu6_1, pool_type="max", kernel=(2, 2), stride=(2, 2), name="pool6")
+    batchnorm1 = mx.symbol.BatchNorm(pool6, name="batchnorm1")
+
+    conv7_1 = mx.symbol.Convolution(
+        data=batchnorm1, kernel=(5, 5), pad=(1, 1), num_filter=64, name="conv7_1")
+    relu7_1 = mx.symbol.Activation(data=conv7_1, act_type="relu", name="relu7_1")
+    pool7 = mx.symbol.Pooling(
+        data=relu7_1, pool_type="max", kernel=(2, 2), stride=(2, 2), name="pool7")
+    batchnorm2 = mx.symbol.BatchNorm(pool7, name="batchnorm2")
+
+    fc1 = mx.symbol.FullyConnected(data=batchnorm2, num_hidden=6, name="fc1")
+    relu8 = mx.symbol.Activation(data=fc1, act_type="linear", name="relu8")
+    trans = mx.symbol.Dropout(data=relu8, p=0.5, name="drop8")
+
+    return trans
